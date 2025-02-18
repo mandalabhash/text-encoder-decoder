@@ -7,7 +7,7 @@ The **Text Encoder/Decoder Web App** is a simple Flask-based web application tha
 - Encode text files to **Base64** or **UTF-16**.
 - Decode text files from **Base64** or **UTF-16**.
 - Simple and intuitive web interface.
-- Supports test file upload and download.
+- Supports text file upload and download.
 
 ## Technologies Used
 - **Python (Flask)** - Backend API
