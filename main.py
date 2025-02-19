@@ -1,19 +1,17 @@
 from flask import Flask, request, render_template, send_file
 import base64
 
-def encode_text(content, encoding_type):
-    if encoding_type == "base64":
-        return base64.b64encode(content.encode()).decode()
-    elif encoding_type == "utf-16":
-        return content.encode("utf-16").decode("latin1")
-    return None
+def encode_base64(content):
+    return base64.b64encode(content.encode("utf-8")).decode("ascii")
 
-def decode_text(content, encoding_type):
-    if encoding_type == "base64":
-        return base64.b64decode(content.encode()).decode()
-    elif encoding_type == "utf-16":
-        return content.encode("latin1").decode("utf-16")
-    return None
+def decode_base64(content):
+    return base64.b64decode(content).decode("utf-8")
+
+def encode_utf16(content):
+    return content.encode("utf-16").hex()
+
+def decode_utf16(content):
+    return bytes.fromhex(content).decode("utf-16")
 
 app = Flask(__name__)
 
@@ -27,10 +25,12 @@ def index():
         if file:
             content = file.read().decode("utf-8")
             
-            if action == "encode":
-                processed_content = encode_text(content, encoding_type)
+            if encoding_type == "base64":
+                processed_content = encode_base64(content) if action == "encode" else decode_base64(content)
+            elif encoding_type == "utf-16":
+                processed_content = encode_utf16(content) if action == "encode" else decode_utf16(content)
             else:
-                processed_content = decode_text(content, encoding_type)
+                return "Invalid encoding type", 400
             
             output_file = "output.txt"
             with open(output_file, "w", encoding="utf-8") as f:
